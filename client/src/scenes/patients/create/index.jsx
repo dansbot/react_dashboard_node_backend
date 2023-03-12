@@ -44,7 +44,7 @@ const Register = () => {
     values.email = values.email.toLowerCase();
     values.access = variantName.map((item) => item.value);
     try {
-      await apiPrivate.post(API.v1.users, values, {
+      await apiPrivate.post(API.v1.patients, values, {
         headers: { Authorization: `Bearer ${auth?.accessToken}` },
       });
       setSuccess(true);

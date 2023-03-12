@@ -48,8 +48,6 @@ const handleLogin = async (req, res) => {
       path: req.path,
     });
 
-    console.log(res.getHeaders());
-
     res.json({ accessToken, userInfo });
   } else {
     res.status(401).json({ message: "Invalid password" });

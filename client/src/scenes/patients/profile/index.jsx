@@ -18,7 +18,7 @@ import useAuth from "../../../hooks/useAuth";
 
 const { API } = require("../../../config");
 
-const userProfile = () => {
+const Profile = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [userName, setUserName] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
@@ -37,8 +37,8 @@ const userProfile = () => {
     const fetchUser = async () => {
       try {
         const pathnames = window.location.pathname.split("/");
-        const userId = pathnames[pathnames.length - 1];
-        const response = await api.get(`${API.v1.users}/${userId}`, {
+        const patientId = pathnames[pathnames.length - 1];
+        const response = await api.get(`${API.v1.patients}/${patientId}`, {
           headers: { Authorization: `Bearer ${auth?.accessToken}` },
         });
         const user = response.data;
@@ -141,4 +141,4 @@ const userProfile = () => {
   );
 };
 
-export default userProfile;
+export default Profile;

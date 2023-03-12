@@ -19,13 +19,12 @@ const getUser = async (req, res) => {
 
 const createNewUser = async (req, res) => {
   if (!req?.body?.firstname || !req?.body?.lastname || !req?.body?.email) {
-    return res
-      .status(400)
-      .json({ message: "First/last names and email are required." });
+    return res.status(400).json({
+      message: `First/last names and email are required, sent: ${JSON.stringify(
+        req.body
+      )}`,
+    });
   }
-  console.log(
-    `req.body.firstname: ${req.body.firstname}, req.body.lastname: ${req.body.lastname}`
-  );
   try {
     newUser = {
       firstName: req.body.firstname,
@@ -36,11 +35,13 @@ const createNewUser = async (req, res) => {
     if (req.body?.middlename) newUser.middleName = req.body.middlename;
     if (req.body?.title) newUser.title = req.body.title;
     if (req.body?.access) newUser.access.push(...req.body.access);
-
     const result = await User.create(newUser);
+    console.log(result);
     res.status(201).json(result);
   } catch (err) {
-    console.error(err);
+    return res.status(409).json({
+      message: `User with email "${req.body.email}" already exists`,
+    });
   }
 };
 

@@ -44,6 +44,7 @@ app.use(API.v1.logout, require("./routes/logout"));
 app.use(verifyJWT);
 app.use(API.v1.employees, require("./routes/api/employees"));
 app.use(API.v1.users, require("./routes/api/users"));
+app.use(API.v1.patients, require("./routes/api/patients"));
 
 // .all is used for all methods; * is okay because it is at the end of the code
 app.all("*", (req, res) => {
