@@ -3,3 +3,4 @@ logs
 .env
 *sw_.*
 *.jpg
+*ServiceAcct*

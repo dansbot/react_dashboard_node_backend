@@ -1,7 +1,9 @@
 const User = require("../data/User");
 
 const getAllUsers = async (req, res) => {
-  const users = await User.find().select("_id firstName lastName email title");
+  const users = await User.find().select(
+    "_id firstName lastName email title access"
+  );
   if (!users) return res.status(204).json({ message: "No users found." });
   res.json(users);
 };

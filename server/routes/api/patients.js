@@ -6,17 +6,29 @@ const verifyAccess = require("../../middleware/verifyAccess");
 
 router
   .route("/")
-  .get(patientsController.getAllPatients)
+  .get(verifyAccess(ACCESS.read_only), patientsController.getAllPatients)
   .post(
-    // verifyAccess(ACCESS.admin, ACCESS.manager),
+    verifyAccess(
+      ACCESS.admin,
+      ACCESS.manager,
+      ACCESS.reviewer,
+      ACCESS.annotater
+    ),
     patientsController.createNewPatient
   )
   .put(
-    verifyAccess(ACCESS.admin, ACCESS.manager),
+    verifyAccess(
+      ACCESS.admin,
+      ACCESS.manager,
+      ACCESS.reviewer,
+      ACCESS.annotater
+    ),
     patientsController.updatePatient
   )
-  //   .delete(verifyAccess(ACCESS.admin), patientsController.deletePatient);
-  .delete(patientsController.deletePatient);
+  .delete(
+    verifyAccess(ACCESS.admin, ACCESS.manager),
+    patientsController.deletePatient
+  );
 
 router.route("/:patient_id").get(patientsController.getPatient);
 

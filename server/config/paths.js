@@ -10,6 +10,7 @@ const API = {
     register: "/api/v1/register",
     users: "/api/v1/users",
     patients: "/api/v1/patients",
+    records: "/api/v1/records",
   },
 };
 

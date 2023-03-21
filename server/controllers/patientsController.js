@@ -37,7 +37,6 @@ const createNewPatient = async (req, res) => {
       }
     }
     const result = await Patient.create(newPatient);
-    console.log(result);
     res.status(201).json(result);
   } catch (err) {
     return res.status(409).json({
