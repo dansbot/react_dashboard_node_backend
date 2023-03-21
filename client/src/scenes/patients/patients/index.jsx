@@ -31,7 +31,7 @@ const Team = () => {
       }
     };
     fetchData();
-  }, [auth]);
+  }, [auth, apiPrivate, location, navigate]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -46,10 +46,10 @@ const Team = () => {
           <Button
             color="info"
             onClick={() => {
-              navigate(`/patient/${params.row._id}`);
+              navigate(`/patient/${params.row.patient_id}`);
             }}
           >
-            {getFullName(params)}
+            {params.row.patient_id}
           </Button>
         );
       },

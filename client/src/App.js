@@ -8,13 +8,14 @@ import Contacts from "./scenes/contacts";
 import Bar from "./scenes/bar";
 import Line from "./scenes/line";
 import Login from "./scenes/login";
+import Logout from "./scenes/logout";
 import Pie from "./scenes/pie";
 import FAQ from "./scenes/faq";
-import Create_User from "./scenes/users/create";
-import User_Profile from "./scenes/users/profile";
+import CreateUser from "./scenes/users/create";
+import UserProfile from "./scenes/users/profile";
 import Team from "./scenes/users/team";
-import Create_Patient from "./scenes/patients/create";
-import Patient_Profile from "./scenes/patients/profile";
+import CreatePatient from "./scenes/patients/create";
+import PatientProfile from "./scenes/patients/profile";
 import Patients from "./scenes/patients/patients";
 import Geography from "./scenes/geography";
 import { CssBaseline, ThemeProvider } from "@mui/material";
@@ -45,18 +46,19 @@ function App() {
                 <Route
                   element={<RequireAuth allowedRoles={["admin", "manager"]} />}
                 >
-                  <Route path="/create_user" element={<Create_User />} />
-                  <Route path="/create_patient" element={<Create_Patient />} />
+                  <Route path="/create_user" element={<CreateUser />} />
+                  <Route path="/create_patient" element={<CreatePatient />} />
                 </Route>
 
                 {/* read_all routes */}
                 <Route element={<RequireAuth allowedRoles={["read_only"]} />}>
+                  <Route path="/logout" element={<Logout />} />
                   <Route path="/team" element={<Team />} />
                   <Route path="/patients" element={<Patients />} />
                   <Route path="/invoices" element={<Invoices />} />
                   <Route path="/calendar" element={<Calendar />} />
-                  <Route path="/user_profile/:id" element={<User_Profile />} />
-                  <Route path="/patient/:id" element={<Patient_Profile />} />
+                  <Route path="/user_profile/:id" element={<UserProfile />} />
+                  <Route path="/patient/:id" element={<PatientProfile />} />
                   <Route path="/contacts" element={<Contacts />} />
                   <Route path="/bar" element={<Bar />} />
                   <Route path="/pie" element={<Pie />} />

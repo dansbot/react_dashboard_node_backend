@@ -10,6 +10,7 @@ const API = {
     register: "/api/v1/register",
     users: "/api/v1/users",
     patients: "/api/v1/patients",
+    records: "/api/v1/records",
   },
 };
 
@@ -26,4 +27,15 @@ const DB = {
   },
 };
 
-module.exports = { API, DB };
+const RECORDS = {
+  meta: {
+    folder: "easyai/patients/meta",
+    fileType: "meta",
+  },
+  ecg: {
+    folder: "easyai/patients/ecg",
+    fileType: "csv",
+  },
+};
+
+module.exports = { API, DB, RECORDS };

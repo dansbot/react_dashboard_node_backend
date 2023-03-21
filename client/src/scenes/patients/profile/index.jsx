@@ -1,71 +1,82 @@
-import * as React from "react";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { Typography, useTheme, Box } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import api from "../../../api/connection.js";
+import axios from "axios";
+// import useMediaQuery from "@mui/material/useMediaQuery";
+import useApiPrivate from "../../../hooks/useApiPrivate";
 import Header from "../../../components/Header";
+import EcgChart from "../../../components/EcgChart";
 import { tokens } from "../../../theme";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableRow from "@mui/material/TableRow";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import useAuth from "../../../hooks/useAuth";
 
-const { API } = require("../../../config");
+const { API, RECORDS } = require("../../../config");
 
 const Profile = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [userName, setUserName] = React.useState("");
-  const [firstName, setFirstName] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [middleName, setMiddleName] = React.useState("");
-  const [title, setTitle] = React.useState("");
-  const [email, setEmail] = React.useState("");
-  const [access, setAccess] = React.useState("");
-  const [image, setImage] = React.useState("");
-  const { auth } = useAuth();
+  const apiPrivate = useApiPrivate();
+  // const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [patientId, setPatientId] = useState("");
+  const [age, setAge] = useState("");
+  const [sex, setSex] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
+  const [diagnosis, setDiagnosis] = useState("");
+  const [recordingDate, setRecordingDate] = useState("");
+  const [report, setReport] = useState("");
+  const [ecgUrl, setEcgUrl] = useState("");
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchPatient = async () => {
       try {
         const pathnames = window.location.pathname.split("/");
         const patientId = pathnames[pathnames.length - 1];
-        const response = await api.get(`${API.v1.patients}/${patientId}`, {
-          headers: { Authorization: `Bearer ${auth?.accessToken}` },
-        });
-        const user = response.data;
-        setUserName(`${user.firstName || ""} ${user.lastName || ""}`);
-        setFirstName(user.firstName);
-        setMiddleName(user.middleName);
-        setLastName(user.lastName);
-        setEmail(user.email);
-        setAccess(user.access);
-        setImage(user.image);
-        setTitle(user.title);
+        const response = await apiPrivate.get(
+          `${API.v1.patients}/${patientId}`
+        );
+        const patient = response.data;
+
+        setPatientId(patient.patient_id);
+        setAge(`${patient.age} yrs`);
+        setSex(patient.sex);
+        setHeight(`${patient.height}cm`);
+        setWeight(`${patient.weight}kg`);
+        setDiagnosis(patient.diagnosis);
+        setRecordingDate(patient.recording_date);
+        setReport(patient.report);
       } catch (err) {
         // not is 200 repoonse range
         console.log(err);
       }
     };
-    fetchUser();
-  }, []);
+    fetchPatient();
+  }, [apiPrivate]);
 
-  let navigate = useNavigate();
-  if (!image) {
-    setImage(`../../assets/user/img/default_user.png`);
-  }
+  useEffect(() => {
+    const fetchEcgUrl = async () => {
+      try {
+        const pathnames = window.location.pathname.split("/");
+        const patientId = pathnames[pathnames.length - 1];
+        const response = await apiPrivate.get(
+          `${API.v1.records}?folderName=${RECORDS.ecg.folder}&fileName=${patientId}.${RECORDS.ecg.fileType}`
+        );
+        const url = response.data?.url;
+        setEcgUrl(url);
+      } catch (err) {
+        // not is 200 repoonse range
+        console.log(err);
+      }
+    };
+    fetchEcgUrl();
+  }, [apiPrivate]);
 
   return (
     <Box m="20px">
-      <Header title={userName} subtitle={title} />
+      <Header title={patientId} />
 
       <Box
         mb="25px"
@@ -76,66 +87,83 @@ const Profile = () => {
           padding: 2,
         }}
       >
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <img
-            alt="profile-user"
-            width="250px"
-            height="250px"
-            // TODO: Store, Fetch and Display images to Mongo DB
-            src={image}
-            style={{
-              cursor: "pointer",
-              borderRadius: "50%",
-              marginBottom: "10px",
-            }}
-          />
-        </Box>
-        <Box
-          width="40%"
-          m="0 auto"
-          p="5px"
-          display="flex"
-          justifyContent="center"
-          backgroundColor={colors.greenAccent[600]}
-          borderRadius="4px"
-        >
-          {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-          {access === "manager" && <SecurityOutlinedIcon />}
-          {access === "read_only" && <LockOpenOutlinedIcon />}
-          {access === "reviewer" && <LockOpenOutlinedIcon />}
-          {access === "annotate_only" && <LockOpenOutlinedIcon />}
-          <Typography sx={{ ml: "5px" }}>{access}</Typography>
-        </Box>
         <TableContainer>
           <Table>
             <TableBody>
               <TableRow>
                 <TableCell align="left" style={{ verticalAlign: "bottom" }}>
-                  <Typography variant="h6">First Name</Typography>
+                  <Typography variant="h6">Age</Typography>
                 </TableCell>
                 <TableCell align="left" style={{ verticalAlign: "bottom" }}>
-                  <Typography variant="h5">{firstName}</Typography>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
-                  <Typography variant="h6">Last Name</Typography>
-                </TableCell>
-                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
-                  <Typography variant="h5">{lastName}</Typography>
+                  <Typography variant="h5">{age}</Typography>
                 </TableCell>
               </TableRow>
               <TableRow>
                 <TableCell align="left" style={{ verticalAlign: "bottom" }}>
-                  <Typography variant="h6">email</Typography>
+                  <Typography variant="h6">Sex</Typography>
                 </TableCell>
                 <TableCell align="left" style={{ verticalAlign: "bottom" }}>
-                  <Typography variant="h5">{email}</Typography>
+                  <Typography variant="h5">{sex}</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h6">Height</Typography>
+                </TableCell>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h5">{height}</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h6">Weight</Typography>
+                </TableCell>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h5">{weight}</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h6">Diagnosis</Typography>
+                </TableCell>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h5">{diagnosis}</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h6">Recording Date</Typography>
+                </TableCell>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h5">{recordingDate}</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h6">Report</Typography>
+                </TableCell>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h5">{report}</Typography>
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h6">ECG File</Typography>
+                </TableCell>
+                <TableCell align="left" style={{ verticalAlign: "bottom" }}>
+                  <Typography variant="h5">
+                    <a href={ecgUrl} download="ecg">
+                      download ecg
+                    </a>
+                  </Typography>
                 </TableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
+      </Box>
+      <Box>
+        <EcgChart csvUrl={ecgUrl} />
       </Box>
     </Box>
   );

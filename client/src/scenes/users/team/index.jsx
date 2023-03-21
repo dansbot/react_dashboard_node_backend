@@ -38,7 +38,7 @@ const Team = () => {
       }
     };
     fetchData();
-  }, [auth]);
+  }, [auth, apiPrivate, location, navigate]);
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -54,7 +54,7 @@ const Team = () => {
           <Button
             color="info"
             onClick={() => {
-              navigate(`/profile/${params.row._id}`);
+              navigate(`/user_profile/${params.row._id}`);
             }}
           >
             {getFullName(params)}
@@ -72,7 +72,7 @@ const Team = () => {
           <Button
             color="info"
             onClick={() => {
-              navigate(`/profile/${params.row._id}`);
+              navigate(`/user_profile/${params.row._id}`);
             }}
           >
             {params.row.email}
@@ -90,7 +90,19 @@ const Team = () => {
       field: "access",
       headerName: "Access",
       flex: 1,
-      renderCell: ({ row: { access } }) => {
+      renderCell: ({ row }) => {
+        const access = row?.access ?? "";
+        // Define access levels in order of importance
+        const accessLevels = [
+          "admin",
+          "manager",
+          "reviewer",
+          "annotater",
+          "read_only",
+        ];
+        // Find the most important access level that the user has
+        const userAccess = accessLevels.find((level) => access.includes(level));
+
         return (
           <Box
             width="60%"
@@ -99,21 +111,21 @@ const Team = () => {
             display="flex"
             justifyContent="center"
             backgroundColor={
-              access === "admin"
+              userAccess === "admin"
                 ? colors.greenAccent[600]
-                : access === "manager"
+                : userAccess === "manager"
                 ? colors.greenAccent[700]
                 : colors.greenAccent[700]
             }
             borderRadius="4px"
           >
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "read_only" && <LockOpenOutlinedIcon />}
-            {access === "reviewer" && <LockOpenOutlinedIcon />}
-            {access === "annotate_only" && <LockOpenOutlinedIcon />}
+            {userAccess === "admin" && <AdminPanelSettingsOutlinedIcon />}
+            {userAccess === "manager" && <SecurityOutlinedIcon />}
+            {userAccess === "read_only" && <LockOpenOutlinedIcon />}
+            {userAccess === "reviewer" && <LockOpenOutlinedIcon />}
+            {userAccess === "annotater" && <LockOpenOutlinedIcon />}
             <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
+              {userAccess}
             </Typography>
           </Box>
         );

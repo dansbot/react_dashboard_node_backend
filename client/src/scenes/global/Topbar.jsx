@@ -9,12 +9,23 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import useAuth from "../../hooks/useAuth.js";
 
 const Topbar = () => {
+  const { auth } = useAuth();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
   const navigate = useNavigate();
+  const isAuthenticated = !!auth?.userInfo;
+
+  const handlePersonIconClick = () => {
+    if (isAuthenticated) {
+      navigate("/logout");
+    } else {
+      navigate("/login");
+    }
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -45,7 +56,7 @@ const Topbar = () => {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton onClick={() => navigate("/login")}>
+        <IconButton onClick={handlePersonIconClick}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>

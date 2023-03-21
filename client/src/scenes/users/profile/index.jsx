@@ -1,9 +1,8 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Typography, useTheme, Box } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import api from "../../../api/connection.js";
+// import useMediaQuery from "@mui/material/useMediaQuery";
+import useApiPrivate from "../../../hooks/useApiPrivate";
 import Header from "../../../components/Header";
 import { tokens } from "../../../theme";
 import Table from "@mui/material/Table";
@@ -18,12 +17,13 @@ import useAuth from "../../../hooks/useAuth";
 
 const { API } = require("../../../config");
 
-const userProfile = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
+const UserProfile = () => {
+  const apiPrivate = useApiPrivate();
+  // const isNonMobile = useMediaQuery("(min-width:600px)");
   const [userName, setUserName] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
-  const [middleName, setMiddleName] = React.useState("");
+  // const [middleName, setMiddleName] = React.useState("");
   const [title, setTitle] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [access, setAccess] = React.useState("");
@@ -38,27 +38,37 @@ const userProfile = () => {
       try {
         const pathnames = window.location.pathname.split("/");
         const userId = pathnames[pathnames.length - 1];
-        const response = await api.get(`${API.v1.users}/${userId}`, {
-          headers: { Authorization: `Bearer ${auth?.accessToken}` },
-        });
+        const response = await apiPrivate.get(`${API.v1.users}/${userId}`);
         const user = response.data;
         setUserName(`${user.firstName || ""} ${user.lastName || ""}`);
         setFirstName(user.firstName);
-        setMiddleName(user.middleName);
+        // setMiddleName(user.middleName);
         setLastName(user.lastName);
         setEmail(user.email);
-        setAccess(user.access);
         setImage(user.image);
         setTitle(user.title);
+
+        // Define access levels in order of importance
+        const accessLevels = [
+          "admin",
+          "manager",
+          "reviewer",
+          "annotater",
+          "read_only",
+        ];
+        // Find the most important access level that the user has
+        const userAccess = accessLevels.find((level) =>
+          user.access.includes(level)
+        );
+        // Set the access state to the most important access level
+        setAccess(userAccess || "");
       } catch (err) {
-        // not is 200 repoonse range
         console.log(err);
       }
     };
     fetchUser();
-  }, []);
+  }, [auth, apiPrivate]);
 
-  let navigate = useNavigate();
   if (!image) {
     setImage(`../../assets/user/img/default_user.png`);
   }
@@ -141,4 +151,4 @@ const userProfile = () => {
   );
 };
 
-export default userProfile;
+export default UserProfile;

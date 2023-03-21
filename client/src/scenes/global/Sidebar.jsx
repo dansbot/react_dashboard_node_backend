@@ -7,8 +7,8 @@ import { tokens } from "../../theme";
 import useAuth from "../../hooks/useAuth";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+// import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
+// import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
@@ -130,7 +130,7 @@ const Sidebar = () => {
 
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item
-              title="Dashboard"
+              title="Home"
               to="/"
               icon={<HomeOutlinedIcon />}
               isActive={window.location.pathname === "/"}
@@ -143,45 +143,36 @@ const Sidebar = () => {
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Data
+              Patients
             </Typography>
             <Item
-              title="Manage Team"
-              to="/team"
+              title="Manage Patients"
+              to="/patients"
               icon={<PeopleOutlinedIcon />}
-              isActive={window.location.pathname === "/team"}
+              isActive={window.location.pathname === "/patients"}
               // selected={selected}
               // setSelected={setSelected}
             />
             <Item
-              title="Contacts Information"
-              to="/contacts"
-              icon={<ContactsOutlinedIcon />}
-              isActive={window.location.pathname === "/contacts"}
+              title="Register Patient"
+              to="/create_patient"
+              icon={<PersonOutlinedIcon />}
+              isActive={window.location.pathname === "/create_patient"}
               // selected={selected}
               // setSelected={setSelected}
             />
-            <Item
-              title="Invoices Balances"
-              to="/invoices"
-              icon={<ReceiptOutlinedIcon />}
-              isActive={window.location.pathname === "/invoices"}
-              // selected={selected}
-              // setSelected={setSelected}
-            />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
-              Pages
+              My Account
             </Typography>
             <Item
-              title="Profile Form"
-              to="/create_user"
+              title="Profile"
+              to="user_profile"
               icon={<PersonOutlinedIcon />}
-              isActive={window.location.pathname === "/create_user"}
+              isActive={window.location.pathname === "/user_profile"}
               // selected={selected}
               // setSelected={setSelected}
             />
@@ -193,6 +184,37 @@ const Sidebar = () => {
               // selected={selected}
               // setSelected={setSelected}
             />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Users
+            </Typography>
+            <Item
+              title="Manage Team"
+              to="/team"
+              icon={<PeopleOutlinedIcon />}
+              isActive={window.location.pathname === "/team"}
+              // selected={selected}
+              // setSelected={setSelected}
+            />
+            <Item
+              title="Create Team Member"
+              to="/create_user"
+              icon={<PersonOutlinedIcon />}
+              isActive={window.location.pathname === "/create_user"}
+              // selected={selected}
+              // setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Pages
+            </Typography>
+
             <Item
               title="FAQ Page"
               to="/faq"
